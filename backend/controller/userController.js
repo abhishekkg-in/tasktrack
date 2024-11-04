@@ -28,6 +28,8 @@ const registerUser = asyncHandler(async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      googleId: "",
+      image: ""
     })
     if(user){
         res.status(201).json({
