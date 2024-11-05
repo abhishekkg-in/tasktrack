@@ -74,6 +74,7 @@ const loginUser = asyncHandler(async (req,res) => {
 // @route   GET api/users/me
 // @access  private
 const getMe = asyncHandler(async (req, res) => {
+    console.log("got all user...................");
     const user = await User.find()
     res.status(200).json(user)
   })

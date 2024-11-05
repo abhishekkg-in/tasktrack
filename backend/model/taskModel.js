@@ -10,6 +10,9 @@ const taskSchema = new Schema({
     },
     status: {
         type: String
+    },
+    userId: {
+        type: String
     }
 }, {timestamps:true})
 

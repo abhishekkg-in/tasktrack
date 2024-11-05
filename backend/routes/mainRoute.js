@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const {createTask, getAlltask, updateTask, deleteTask} = require("../controller/taskController")
+const {createTask, getAlltask, updateTask, deleteTask, getTaskByUser} = require("../controller/taskController")
 const {updateUsers, deleteUsers, registerUser, loginUser, getMe} = require("../controller/userController")
 
 
@@ -14,6 +14,7 @@ router.get('/users/me', getMe)
 // Tasks Routes
 router.route("/tasks/:id").put(updateTask).delete(deleteTask)
 router.get("/tasks/all", getAlltask)
+router.post("/tasks/user/:id", getTaskByUser)
 router.post("/tasks/create", createTask)
 
 
