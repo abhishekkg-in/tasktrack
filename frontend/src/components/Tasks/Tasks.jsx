@@ -1,11 +1,15 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Modal, Button } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import Task from '../Task/Task';
-import Test from './Test'
+import axios from 'axios'
+import TaskBoard from './TaskBoard'
 
 
 export default function Tasks() {
+  const [tasks, setTasks] = useState([]);
+  const [columns, setColumns] = useState({});
+  const [searchTerm, setSearchTerm] = useState("")
+
   const [showCreateTask, setShowCreateTask] = useState(false)
   const [showTaskdetails, setShowTaskdetails] = useState(false)
   const [showTaskUpdate, setShowTaskUpdate] = useState(false)
@@ -20,6 +24,34 @@ export default function Tasks() {
   const handleShowdetails = () => setShowTaskdetails(true);
   const handleCloseupdate = () => setShowTaskUpdate(false);
   const handleShowUpdate = () => setShowTaskUpdate(true);
+
+
+  // Fetch tasks from backend
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/tasks/all"); // Replace with actual API URL
+        const fetchedTasks = response.data;
+        
+        console.log("data -> ", fetchedTasks);
+        // Group tasks by their status
+        const groupedTasks = fetchedTasks.reduce(
+          (acc, task) => {
+            const status = task.status.toLowerCase(); // Convert status to lowercase
+            acc[status] = [...(acc[status] || []), task];
+            return acc;
+          },
+          { todo: [], inprogress: [], done: [] } // Adjust statuses as needed
+        );
+        console.log("groupedtasks -> ", groupedTasks);
+        setTasks(fetchedTasks);
+        setColumns(groupedTasks);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+    fetchTasks();
+  }, []);
 
   const createTask = () => {
     console.log('Task created');
@@ -41,7 +73,7 @@ export default function Tasks() {
   };
 
 
-  const [columns, setColumns] = useState(initialData);
+  // const [columns, setColumns] = useState(initialData);
  
   const onDragEnd = (result) => {
     const { source, destination } = result;
@@ -72,7 +104,12 @@ export default function Tasks() {
 
 
       <div className="tasks-container">
-       <Test />
+        {
+          columns && (
+            <TaskBoard data={columns} />
+          )
+        }
+       
       </div>
 
 

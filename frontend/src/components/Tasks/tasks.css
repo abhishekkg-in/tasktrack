@@ -1,0 +1,29 @@
+.actions{
+    display: flex;
+    justify-content: flex-end;
+    /* border: 1px solid black; */
+    /* width: 60%; */
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.actions .item {
+    margin: 2px;
+    border-radius: 6px;
+    padding: 3px  10px;
+    cursor: pointer;
+}
+
+.delete{
+    background-color: #e85f5f;
+    
+}
+
+.edit{
+    background-color: #5595f4;
+}
+
+.details {
+    background-color: #3273f5;
+}
