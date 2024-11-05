@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { register, reset } from '../../features/auth/authSlice'
 import { toast } from 'react-toastify'
 import Spinner from '../../components/Spinner/Spinner'
@@ -108,6 +108,11 @@ export default function Register() {
 
             <button type='submit'>Submit</button>
           </form>
+          <div className='mt-3' >
+            <span>Already have account ?</span>
+            <Link style={{marginLeft:"5px", listStyle:"none"}} to='/login'>Login</Link>
+          </div>
+          <button className='btn btn-primary mt-3'>Signup with Google</button>
         </div>
       </div>
     </div>

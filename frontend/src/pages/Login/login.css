@@ -2,21 +2,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    
   }
-
-/* .home-outter{
-    height: min(92vh);
-    background: linear-gradient(rgb(141, 141, 214), blue)
-  }
-  
-  .home-outter  h1{
-    text-align: center;
-    font-size: 3rem;
-  }
-  
-  .home-outter a{
-    color: yellow;
-  } */
 
 .form{
     margin-top: 3rem;

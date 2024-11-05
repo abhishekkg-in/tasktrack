@@ -31,6 +31,7 @@ export default function DragDropBoard() {
   const [showTaskUpdate, setShowTaskUpdate] = useState(false)
   const [selectedTask, setSelectedtask] = useState({title: "", description:""})
   const [forseUpdate, setForseUpdate] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
 
   const handleCloseDetails = () => setShowTaskdetails(false);
   const handleShowdetails = () => setShowTaskdetails(true);
@@ -54,10 +55,6 @@ export default function DragDropBoard() {
     );
 
     console.log("task updated capture --->>> ", tasks);
-
-    // if(Object.keys(groupedTasks).length>0){
-    //   setColumns(groupedTasks)
-    // }
 
     if(Object.keys(taskWithColumn).length>0){
       setColumns(groupedTasks)
@@ -147,7 +144,24 @@ export default function DragDropBoard() {
       [source.droppableId]: sourceColumn,
       [destination.droppableId]: destColumn,
     });
+
+    updateTaskStatus(movedTask._id, destination.droppableId)
+
+
   };
+
+  const updateTaskStatus = (taskId, newStatus) => {
+    let task = tasks.find(obj => obj._id === taskId);
+    const newTask = {
+      id: task._id,
+      title: task.title,
+      description: task.description,
+      status: newStatus
+    }
+
+    dispatch(updateTask(newTask))
+    console.log("new task Status-->> ", newTask);
+  }
 
   const handleViewtask = (taskId) => {
     let task = tasks.find(obj => obj._id === taskId);
@@ -172,6 +186,13 @@ export default function DragDropBoard() {
     console.log("Delete button clicked...", task);
   }
 
+  const filteredColumns = Object.keys(columns).reduce((acc, columnId) => {
+    acc[columnId] = columns[columnId].filter((task) => task.title.toLowerCase().includes(searchTerm.toLowerCase()) 
+          || task.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    return acc;
+  }, {})
+
 
 
   if(!user){
@@ -185,6 +206,73 @@ export default function DragDropBoard() {
  
   return (
     <>
+    <div className="search-sort mt-3 mb-3" style={{border:"1px solid black", padding:"10px"}}>
+        {/* <div className="items" style={{
+          display:"flex",
+          flexWrap:"wrap",
+          justifyContent:"space-between",
+          width: "100%"
+        }}>
+          <div className="search">
+            <input 
+            type="text"
+            placeholder="Search tasks..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width:"80% !important",
+              // flex:"3"
+            }}
+            />
+          </div>
+          <div className="sort" style={{
+            // flex: "1"
+          }}>
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown button
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </div>
+          </div>
+        </div> */}
+        <div className="items" style={{
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  width: "100%"
+}}>
+  <div className="search" style={{ flexGrow: 1 }}>
+    <input 
+      type="text"
+      placeholder="Search tasks..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      style={{
+        width: "100%",
+        marginTop:"3px",
+        boxSizing: "border-box" // Ensures padding and border are included in the width
+      }}
+    />
+  </div>
+  <div className="sort" style={{ marginLeft: "10px" }}>
+    <div className="dropdown ">
+      <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Sort
+      </button>
+      <ul className="dropdown-menu">
+        <li><a className="dropdown-item" href="#">Recent</a></li>
+        <li><a className="dropdown-item" href="#">Older</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+    </div>
+
     <DragDropContext onDragEnd={onDragEnd}>
       <div style={{ 
           display: "flex",

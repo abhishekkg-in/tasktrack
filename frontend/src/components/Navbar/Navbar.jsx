@@ -3,6 +3,7 @@ import { FaFileAlt } from 'react-icons/fa'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../../features/auth/authSlice'
 import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import { FaUserAlt, FaSignOutAlt, FaUser } from 'react-icons/fa'
 import {
   MdArrowDropDown,
@@ -17,6 +18,27 @@ export default function Navbar() {
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
 
+  const [userdata, setUserdata] = useState({});
+
+  const getUser = async () => {
+    try {
+        const response = await axios.get("http://localhost:5000/login/success", { withCredentials: true });
+        console.log("user Data --->>>", response.data.user);
+        setUserdata(response.data.user)
+    } catch (error) {
+        console.log("error", error)
+    }
+  }
+
+  // logoout
+  const logoutUser = ()=>{
+    window.open("http://localhost:5000/logout","_self")
+  }
+
+  useEffect(() => {
+    getUser()
+  }, [])
+
   useEffect(() => {
     dispatch(reset())
   }, [user, navigate, dispatch])
@@ -27,6 +49,7 @@ export default function Navbar() {
     localStorage.removeItem('options')
     dispatch(logout())
     dispatch(reset())
+    logoutUser()
     navigate('/')
   }
 

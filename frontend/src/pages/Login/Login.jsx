@@ -48,6 +48,10 @@ export default function Login() {
     dispatch(login(userData))
   }
 
+  const loginWithGoogle = () => {
+    window.open("http://localhost:5000/auth/google/callback", "_self")
+  }
+
   if (isLoading) {
     return <Spinner />
   }
@@ -57,7 +61,7 @@ export default function Login() {
     <div className='container text-center mt-5'>
        <div className='home-outter outter'>
       <div className='container text-center'>
-        <h1>Login page</h1>
+        <h1 style={{color:"#0d6efd"}}>Login</h1>
         <div>
           <form className='form' onSubmit={handleSubmit}>
             <input
@@ -80,10 +84,11 @@ export default function Login() {
             />
             <button type='submit'>Submit</button>
           </form>
-          <div className='reg-link'>
-            <span>new user ?</span>
-            <Link to='/register'>register now</Link>
+          <div className='mt-3' >
+            <span>Don't have account ?</span>
+            <Link style={{marginLeft:"5px", listStyle:"none"}} to='/register'>Signup</Link>
           </div>
+          <button className='btn btn-primary mt-3' onClick={loginWithGoogle}>Login with Google</button>
         </div>
       </div>
     </div>

@@ -140,10 +140,6 @@ export default function Tasks() {
       {/* <h2>All tasks...</h2>, */}
       <button className='btn btn-primary' onClick={handleCreate}>Add task</button>
 
-      <div className="search-sort mt-3 mb-3" style={{border:"1px solid black", padding:"10px"}}>
-        search & sort
-      </div>
-
 
       <div className="tasks-container">
         {
