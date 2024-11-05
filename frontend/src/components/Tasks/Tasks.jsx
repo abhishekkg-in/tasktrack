@@ -1,7 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import { Modal, Button } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import axios from 'axios'
+import { Link, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import Spinner from '../../components/Spinner/Spinner'
+import { getAllTasks, createTask, reset } from '../../features/tasks/tasksSlice'
+import { toast } from 'react-toastify'
 import TaskBoard from './TaskBoard'
 
 
@@ -13,6 +17,17 @@ export default function Tasks() {
   const [showCreateTask, setShowCreateTask] = useState(false)
   const [showTaskdetails, setShowTaskdetails] = useState(false)
   const [showTaskUpdate, setShowTaskUpdate] = useState(false)
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const { user } = useSelector(
+    (state) => state.auth
+  )
+
+  const {isLoading, isError, message } = useSelector(
+    (state) => state.task
+  )
 
   const handleCreate = () => {
     setShowCreateTask(true)
@@ -27,35 +42,45 @@ export default function Tasks() {
 
 
   // Fetch tasks from backend
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/tasks/all"); // Replace with actual API URL
-        const fetchedTasks = response.data;
+  // useEffect(() => {
+  //   const fetchTasks = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:5000/api/tasks/all"); // Replace with actual API URL
+  //       const fetchedTasks = response.data;
         
-        console.log("data -> ", fetchedTasks);
-        // Group tasks by their status
-        const groupedTasks = fetchedTasks.reduce(
-          (acc, task) => {
-            const status = task.status.toLowerCase(); // Convert status to lowercase
-            acc[status] = [...(acc[status] || []), task];
-            return acc;
-          },
-          { todo: [], inprogress: [], done: [] } // Adjust statuses as needed
-        );
-        console.log("groupedtasks -> ", groupedTasks);
-        setTasks(fetchedTasks);
-        setColumns(groupedTasks);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
-    fetchTasks();
-  }, []);
+  //       console.log("data -> ", fetchedTasks);
+  //       // Group tasks by their status
+  //       const groupedTasks = fetchedTasks.reduce(
+  //         (acc, task) => {
+  //           const status = task.status.toLowerCase(); // Convert status to lowercase
+  //           acc[status] = [...(acc[status] || []), task];
+  //           return acc;
+  //         },
+  //         { todo: [], inprogress: [], done: [] } // Adjust statuses as needed
+  //       );
+  //       console.log("groupedtasks -> ", groupedTasks);
+  //       setTasks(fetchedTasks);
+  //       setColumns(groupedTasks);
+  //     } catch (error) {
+  //       console.error("Error fetching tasks:", error);
+  //     }
+  //   };
+  //   fetchTasks();
+  // }, []);
 
-  const createTask = () => {
-    console.log('Task created');
+  const handleCreateTask = () => {
+    const userData = {
+      id: user._id,
+      title,
+      description,
+      status: "todo"
+    }
+    dispatch(createTask(userData))
+    window.location.reload();
+    toast.success('Task created Succesful')
     handleClose();
+    console.log('Task created', userData);
+    
   };
 
   const initialData = {
@@ -92,6 +117,23 @@ export default function Tasks() {
     });
   };
 
+  const [data, setData] = useState({
+    title: "",
+    description:"",
+  })
+
+  const {title, description} = data
+
+  const handleChange = (e) => {
+    const name = e.target.name
+    const value = e.target.value
+    setData((prevData) => ({ ...prevData, [name]: value }))
+  }
+
+  // if(isLoading){
+  //   return <Spinner />
+  // }
+
   
   return (
     <div className='container mt-4'>
@@ -106,7 +148,7 @@ export default function Tasks() {
       <div className="tasks-container">
         {
           columns && (
-            <TaskBoard data={columns} />
+            <TaskBoard />
           )
         }
        
@@ -116,59 +158,44 @@ export default function Tasks() {
       {/* Dialog to create new task */}
       <Modal className='' show={showCreateTask} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Create Task</Modal.Title>
+            <Modal.Title>Create New Task</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
-            <p>Task details go here...</p>
+            <>
+            <form className='form'>
+            <input
+              type='text'
+              value={title}
+              onChange={handleChange}
+              placeholder='title'
+              id='title'
+              name='title'
+            />
+            <input
+              type='text'
+              value={description}
+              onChange={handleChange}
+              placeholder='description'
+              name='description'
+            />
+          </form>
+            </>
           </Modal.Body>
 
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={createTask}>
+            <Button variant="primary" onClick={handleCreateTask}>
               Save
             </Button>
           </Modal.Footer>
       </Modal>
 
-      {/* Dialog to view task */}
-      <Modal className='' show={showTaskdetails} onHide={handleCloseDetails}>
-          <Modal.Header closeButton>
-            <Modal.Title>Task Details</Modal.Title>
-          </Modal.Header>
 
-          <Modal.Body>
-            <p>Task details go here...</p>
-          </Modal.Body>
 
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseDetails}>
-              Close
-            </Button>
-          </Modal.Footer>
-      </Modal>
-
-      {/* Dialog to modify task */}
-      <Modal className='' show={showCreateTask} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit Task</Modal.Title>
-          </Modal.Header>
-
-          <Modal.Body>
-            <p>Task details go here...</p>
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={createTask}>
-              Save
-            </Button>
-          </Modal.Footer>
-      </Modal>
+      
 
     </div>
   )

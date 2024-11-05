@@ -1,40 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
-import { getAllTasks, reset } from '../../features/tasks/tasksSlice'
+import { getAllTasks, updateTask, deleteTask, reset } from '../../features/tasks/tasksSlice'
 import { Link, useNavigate } from 'react-router-dom'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Modal, Button } from 'react-bootstrap';
+import { toast } from 'react-toastify'
+import Spinner from '../../components/Spinner/Spinner'
 import "./tasks.css"
  
 const initialData = {
   todo: [
-    { id: "1", title: "Task 1", description: "test description....", createdAt: "05/09/2024" },
-    { id: "2", title: "Task 2", description: "test description....", createdAt: "05/09/2024" },
+    // { _id: "1", title: "Task 1", description: "test description....", createdAt: "05/09/2024" },
+    // { _id: "2", title: "Task 2", description: "test description....", createdAt: "05/09/2024" },
   ],
   inProgress: [
-    { id: "3", title: "Task 3", description: "test description...." , createdAt: "05/09/2024"},
-    { id: "4", title: "Task 4", description: "test description...." , createdAt: "05/09/2024"},
+    // { _id: "3", title: "Task 3", description: "test description...." , createdAt: "05/09/2024"},
+    // { _id: "4", title: "Task 4", description: "test description...." , createdAt: "05/09/2024"},
   ],
   done: [
-    { id: "5", title: "Task 5", description: "test description...." , createdAt: "05/09/2024"},
+    // { _id: "5", title: "Task 5", description: "test description...." , createdAt: "05/09/2024"},
   ],
 };
  
-export default function DragDropBoard({data}) {
+export default function DragDropBoard() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  const [columns, setColumns] = useState(initialData);
+  const [showTaskdetails, setShowTaskdetails] = useState(false)
+  const [showTaskUpdate, setShowTaskUpdate] = useState(false)
+  const [selectedTask, setSelectedtask] = useState({title: "", description:""})
+  const [forseUpdate, setForseUpdate] = useState(false)
+
+  const handleCloseDetails = () => setShowTaskdetails(false);
+  const handleShowdetails = () => setShowTaskdetails(true);
+  const handleCloseupdate = () => setShowTaskUpdate(false);
+  const handleShowUpdate = () => setShowTaskUpdate(true);
+
   const { user } = useSelector((state) => state.auth)
-  const { tasks, isLoading, isError, message } = useSelector(
+
+  const { tasks,taskWithColumn,  isLoading, isError, message } = useSelector(
     (state) => state.task
   )
 
   useEffect(() => {
-    if (isError) {
-      console.log(message)
-    }
-
-    // dispatch((getAllTasks))
     const groupedTasks = tasks.reduce(
       (acc, task) => {
         const status = task.status.toLowerCase(); // Convert status to lowercase
@@ -43,26 +52,86 @@ export default function DragDropBoard({data}) {
       },
       { todo: [], inprogress: [], done: [] } // Adjust statuses as needed
     );
-    setColumns(data)
+
+    console.log("task updated capture --->>> ", tasks);
+
+    // if(Object.keys(groupedTasks).length>0){
+    //   setColumns(groupedTasks)
+    // }
+
+    if(Object.keys(taskWithColumn).length>0){
+      setColumns(groupedTasks)
+    }
 
     return () => {
       dispatch(reset())
     }
-  }, [ isError, message, dispatch])
+  },[tasks, forseUpdate])
 
-  const [columns, setColumns] = useState(initialData);
-  const [showTaskdetails, setShowTaskdetails] = useState(false)
-  const [showTaskUpdate, setShowTaskUpdate] = useState(false)
 
-  const handleCloseDetails = () => setShowTaskdetails(false);
-  const handleShowdetails = () => setShowTaskdetails(true);
-  const handleCloseupdate = () => setShowTaskUpdate(false);
-  const handleShowUpdate = () => setShowTaskUpdate(true);
+  useEffect(() => {
+    if (isError) {
+      console.log(message)
+    }
 
-  // useEffect(() => {
-    
-  // }, [tasks])
- 
+    dispatch(getAllTasks())
+
+    const groupedTasks = tasks.reduce(
+      (acc, task) => {
+        const status = task.status.toLowerCase(); // Convert status to lowercase
+        acc[status] = [...(acc[status] || []), task];
+        return acc;
+      },
+      { todo: [], inprogress: [], done: [] } // Adjust statuses as needed
+    );
+
+    if(Object.keys(groupedTasks).length>0){
+      setColumns(groupedTasks)
+    }
+
+    return () => {
+      dispatch(reset())
+    }
+  }, [ isError, message, dispatch, forseUpdate])
+
+
+  
+
+  const [data, setData] = useState({
+    title: selectedTask.title,
+    description: selectedTask.description,
+  })
+
+  const {title, description} = data
+
+  useEffect(() => {
+    setData({title: selectedTask.title, description: selectedTask.description})
+  }, [selectedTask])
+
+  const handleChange = (e) => {
+    const name = e.target.name
+    const value = e.target.value
+    setData((prevData) => ({ ...prevData, [name]: value }))
+  }
+
+  const handleUpdateDetails = (e) => {
+    e.preventDefault()
+    const userData = {
+      id: selectedTask._id,
+      title,
+      description,
+      status: selectedTask.status
+    }
+    dispatch(updateTask(userData))
+    window.location.reload();
+    setForseUpdate(!forseUpdate)
+
+    handleCloseupdate()
+    console.log(userData);
+    toast.success('Task updated Succesful')
+  }
+
+  
   const onDragEnd = (result) => {
     const { source, destination } = result;
     if (!destination) return;
@@ -78,26 +147,40 @@ export default function DragDropBoard({data}) {
       [source.droppableId]: sourceColumn,
       [destination.droppableId]: destColumn,
     });
-
-    // console.log("moved task", movedTask);
   };
 
   const handleViewtask = (taskId) => {
+    let task = tasks.find(obj => obj._id === taskId);
+    setSelectedtask(task)
+    console.log("view details button clicked...", task);
     handleShowdetails()
-    console.log("view details button clicked...", taskId);
+    
   }
 
-  const handleModifyDetails = (taskId) => {
+  const handleModidyClick = (taskId) => {
+    let task = tasks.find(obj => obj._id === taskId);
+    setSelectedtask(task)
     handleShowUpdate()
-    console.log("Modify button clicked...", taskId);
-  }
-
-  const handleUpdateDetails = () => {
-    console.log("Modify button clicked...");
+    console.log("Modify button clicked...", task);
   }
 
   const handleDelete = (taskId) => {
-    console.log("Delete button clicked...", taskId);
+    let task = tasks.find(obj => obj._id === taskId);
+    setSelectedtask(task)
+    dispatch(deleteTask({id: taskId}))
+    window.location.reload();
+    console.log("Delete button clicked...", task);
+  }
+
+
+
+  if(!user){
+    console.log("user", user);
+    navigate('/')
+  }
+
+  if(isLoading){
+    return <Spinner />
   }
  
   return (
@@ -132,7 +215,7 @@ export default function DragDropBoard({data}) {
                   textTransform: "uppercase"
                 }}>{columnId}</h2>
                 {tasks.map((task, index) => (
-                    <Draggable key={task._id} draggableId={task._id} index={index}>
+                    <Draggable key={`${index}`} draggableId={task._id} index={index}>
                     {(provided) => (
                       <div
                         ref={provided.innerRef}
@@ -158,12 +241,12 @@ export default function DragDropBoard({data}) {
                         <p style={{
                           fontSize: ".8rem",
                           color: "#6f7786",
-                        }}>{task.createdAt}</p>
+                        }}><strong>CreatedAt: </strong> {task.createdAt}</p>
 
                         <div className="actions">
-                          <div className="delete item" onClick={() => handleDelete(task.id)}>Delete</div>
-                          <div className="edit item" onClick={() => handleModifyDetails(task.id)}>Edit</div>
-                          <div className="details item" onClick={() => handleViewtask(task.id)}>View Details</div>
+                          <div className="delete item" onClick={() => handleDelete(task._id)}>Delete</div>
+                          <div className="edit item" onClick={() => handleModidyClick(task._id)}>Edit</div>
+                          <div className="details item" onClick={() => handleViewtask(task._id)}>View Details</div>
                         </div>
                       </div>
                     )}
@@ -185,7 +268,14 @@ export default function DragDropBoard({data}) {
           </Modal.Header>
 
           <Modal.Body>
-            <p>Task details go here...</p>
+          {
+              selectedTask && (
+                <>
+                <h6>{selectedTask.title}</h6>
+                <p>{selectedTask.description}</p>
+                </>
+              )
+            }
           </Modal.Body>
 
           <Modal.Footer>
@@ -202,7 +292,25 @@ export default function DragDropBoard({data}) {
           </Modal.Header>
 
           <Modal.Body>
-            <p>Task details go here...</p>
+            <>
+            <form className='form'>
+            <input
+              type='text'
+              value={title}
+              onChange={handleChange}
+              placeholder='title'
+              id='title'
+              name='title'
+            />
+            <input
+              type='text'
+              value={description}
+              onChange={handleChange}
+              placeholder='description'
+              name='description'
+            />
+          </form>
+            </>
           </Modal.Body>
 
           <Modal.Footer>
