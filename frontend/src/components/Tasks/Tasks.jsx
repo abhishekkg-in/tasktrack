@@ -10,9 +10,10 @@ import TaskBoard from './TaskBoard'
 
 
 export default function Tasks() {
-  const [tasks, setTasks] = useState([]);
+  // const [tasks, setTasks] = useState([]);
   const [columns, setColumns] = useState({});
   const [searchTerm, setSearchTerm] = useState("")
+  const [myLoader, setMyLoader] = useState(false)
 
   const [showCreateTask, setShowCreateTask] = useState(false)
   const [showTaskdetails, setShowTaskdetails] = useState(false)
@@ -25,7 +26,7 @@ export default function Tasks() {
     (state) => state.auth
   )
 
-  const {isLoading, isError, message } = useSelector(
+  const {tasks, isLoading, isError, message } = useSelector(
     (state) => state.task
   )
 
@@ -45,7 +46,7 @@ export default function Tasks() {
   // useEffect(() => {
   //   const fetchTasks = async () => {
   //     try {
-  //       const response = await axios.get("http://localhost:5000/api/tasks/all"); // Replace with actual API URL
+  //       const response = await axios.get("https://tasktrack-backend-gjon.onrender.com/api/tasks/all"); // Replace with actual API URL
   //       const fetchedTasks = response.data;
         
   //       console.log("data -> ", fetchedTasks);
@@ -69,16 +70,28 @@ export default function Tasks() {
   // }, []);
 
   const handleCreateTask = () => {
+    console.log("create task clicked....");
     const userData = {
       id: user._id,
       title,
       description,
       status: "todo"
     }
+
+    console.log("data for new task... ", userData);
     dispatch(createTask(userData))
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    },2000)
+    setData({
+      title: "",
+      description:"",
+    })
     toast.success('Task created Succesful')
     handleClose();
+    // setTimeout(() => {
+    //   window.location.reload();
+    // },1000)
     console.log('Task created', userData);
     
   };
@@ -130,9 +143,11 @@ export default function Tasks() {
     setData((prevData) => ({ ...prevData, [name]: value }))
   }
 
-  // if(isLoading){
+  // if(isLoading || myLoader){
   //   return <Spinner />
   // }
+
+
 
   
   return (

@@ -29,6 +29,15 @@ app.use(session({
     saveUninitialized: true
 }))
 
+// cors origin
+const corsOptions = {
+    origin: 'http://localhost:3000', // Replace with your frontend URL
+    credentials: true, // Allow credentials
+    optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+
+app.use(cors(corsOptions));
+
 // setup passport
 app.use(passport.initialize())
 app.use(passport.session())

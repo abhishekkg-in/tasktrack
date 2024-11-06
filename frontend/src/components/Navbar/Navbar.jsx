@@ -22,7 +22,7 @@ export default function Navbar() {
 
   const getUser = async () => {
     try {
-        const response = await axios.get("http://localhost:5000/login/success", { withCredentials: true });
+        const response = await axios.get("https://tasktrack-backend-gjon.onrender.com/login/success", { withCredentials: true });
         console.log("user Data --->>>", response.data.user);
         setUserdata(response.data.user)
     } catch (error) {
@@ -32,7 +32,7 @@ export default function Navbar() {
 
   // logoout
   const logoutUser = ()=>{
-    window.open("http://localhost:5000/logout","_self")
+    window.open("https://tasktrack-backend-gjon.onrender.com/logout","_self")
   }
 
   useEffect(() => {

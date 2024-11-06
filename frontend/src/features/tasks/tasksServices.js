@@ -5,7 +5,7 @@ const getAllTask = async () => {
     const user = localStorage.getItem('user')
     const id = JSON.parse(user)._id
     const response = await axios.post(`${API_URL}/tasks/user/${id}`)
-    console.log("res in service frontned  ", response.data)
+    console.log("responce of all task for logged user...", response.data)
     // const groupedTasks = response.data.reduce(
     //     (acc, task) => {
     //       const status = task.status.toLowerCase(); // Convert status to lowercase
@@ -18,8 +18,9 @@ const getAllTask = async () => {
 }
 
 const createTask = async (data) => {
+    console.log("got user task data to be created...", data);
     const response = await axios.post(`${API_URL}/tasks/create`, data)
-    console.log("res in service frontned  ", response.data)
+    console.log("got responce after created task", response.data)
     return response.data
 }
 

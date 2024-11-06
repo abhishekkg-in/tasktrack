@@ -13,7 +13,7 @@ const initialData = {
     // { _id: "1", title: "Task 1", description: "test description....", createdAt: "05/09/2024" },
     // { _id: "2", title: "Task 2", description: "test description....", createdAt: "05/09/2024" },
   ],
-  inProgress: [
+  inprogress: [
     // { _id: "3", title: "Task 3", description: "test description...." , createdAt: "05/09/2024"},
     // { _id: "4", title: "Task 4", description: "test description...." , createdAt: "05/09/2024"},
   ],
@@ -32,6 +32,8 @@ export default function DragDropBoard() {
   const [selectedTask, setSelectedtask] = useState({title: "", description:""})
   const [forseUpdate, setForseUpdate] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
+  const [sortOrder, setSortOrder] = useState('recent');
+  const [myLoader, setMyLoader] = useState(false)
 
   const handleCloseDetails = () => setShowTaskdetails(false);
   const handleShowdetails = () => setShowTaskdetails(true);
@@ -120,12 +122,16 @@ export default function DragDropBoard() {
       status: selectedTask.status
     }
     dispatch(updateTask(userData))
-    window.location.reload();
+    setMyLoader(true)
+    setTimeout(() => {
+      setMyLoader(false)
+      window.location.reload();
+      toast.success('Task updated Succesful')
+    },2000)
     setForseUpdate(!forseUpdate)
-
     handleCloseupdate()
     console.log(userData);
-    toast.success('Task updated Succesful')
+    
   }
 
   
@@ -160,6 +166,11 @@ export default function DragDropBoard() {
     }
 
     dispatch(updateTask(newTask))
+    setMyLoader(true)
+    setTimeout(() => {
+      setMyLoader(false)
+      window.location.reload();
+    },1000)
     console.log("new task Status-->> ", newTask);
   }
 
@@ -182,16 +193,63 @@ export default function DragDropBoard() {
     let task = tasks.find(obj => obj._id === taskId);
     setSelectedtask(task)
     dispatch(deleteTask({id: taskId}))
-    window.location.reload();
+    setMyLoader(true)
+    setTimeout(() => {
+      setMyLoader(false)
+      window.location.reload();
+      toast.success('Task deleted')
+    },1000)
     console.log("Delete button clicked...", task);
   }
 
-  const filteredColumns = Object.keys(columns).reduce((acc, columnId) => {
-    acc[columnId] = columns[columnId].filter((task) => task.title.toLowerCase().includes(searchTerm.toLowerCase()) 
-          || task.description.toLowerCase().includes(searchTerm.toLowerCase())
+  
+
+  const filterAndSortTasks = (t) => {
+    console.log("columns-----------------> ", t);
+    const todo = [...t['todo']]
+    const inprogress = [...t['inprogress']]
+    const done = [...t['done']]
+    const allTasks = [...todo, ...inprogress, ...done];
+
+  
+    // console.log("All tasks -->>>", allTasks, ...t['inprogress']);
+
+    const filteredTasks = allTasks.filter(task =>
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    return acc;
-  }, {})
+
+    // console.log("filteredTask ->", filteredTasks);
+    
+    const sortedTasks = filteredTasks.sort((a, b) => {
+      if (sortOrder === 'recent') {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      } else {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      }
+    });
+
+    console.log(sortedTasks);
+
+    const filteredGroupedTasks = sortedTasks.reduce(
+      (acc, task) => {
+        const status = task.status.toLowerCase(); // Convert status to lowercase
+        acc[status] = [...(acc[status] || []), task];
+        return acc;
+      },
+      { todo: [], inprogress: [], done: [] } // Adjust statuses as needed
+    );
+
+    // setColumns(filteredGroupedTasks)
+  
+    // return sortedTasks;
+    return filteredGroupedTasks
+  };
+
+  const displayedTasks = filterAndSortTasks(columns)
+
+
+
 
 
 
@@ -200,7 +258,7 @@ export default function DragDropBoard() {
     navigate('/')
   }
 
-  if(isLoading){
+  if(isLoading || myLoader){
     return <Spinner />
   }
  
@@ -259,8 +317,13 @@ export default function DragDropBoard() {
       }}
     />
   </div>
-  <div className="sort" style={{ marginLeft: "10px" }}>
-    <div className="dropdown ">
+  <div className="sort" style={{ marginLeft: "10px", marginTop:"5px"}}>
+      <span style={{marginRight: "3px", fontWeight:"bold"}}>SortBy:</span>
+      <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+        <option value="recent">Recent</option>
+        <option value="older">Older</option>
+      </select>
+    {/* <div className="dropdown ">
       <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         Sort
       </button>
@@ -268,7 +331,7 @@ export default function DragDropBoard() {
         <li><a className="dropdown-item" href="#">Recent</a></li>
         <li><a className="dropdown-item" href="#">Older</a></li>
       </ul>
-    </div>
+    </div> */}
   </div>
 </div>
     </div>
@@ -280,7 +343,7 @@ export default function DragDropBoard() {
           flexWrap: "wrap",
           gap: "10px" 
         }}>
-        {Object.entries(columns).map(([columnId, tasks]) => (
+        {Object.entries(displayedTasks).map(([columnId, tasks]) => (
           <Droppable key={columnId} droppableId={columnId}>
             {(provided) => (
               <div
@@ -291,8 +354,10 @@ export default function DragDropBoard() {
                   padding: "10px",
                   width: "250px",
                   minHeight: "100px",
+                  // maxHeight: "60vh",
                   borderRadius: "5px",
-                  flex: "1 1 10px"
+                  flex: "1 1 10px",
+                  // overflowY:"scroll"
                 }}
               >
                 <h2 style={{
