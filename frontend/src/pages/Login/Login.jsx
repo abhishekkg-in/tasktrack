@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { login, reset } from '../../features/auth/authSlice'
+import { FaGoogle } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import './login.css'
 
@@ -62,7 +63,7 @@ export default function Login() {
        <div className='home-outter outter'>
       <div className='container text-center'>
         <h1 style={{color:"#0d6efd"}}>Login</h1>
-        <div>
+        <div className='form-outer'>
           <form className='form' onSubmit={handleSubmit}>
             <input
               type='email'
@@ -84,11 +85,16 @@ export default function Login() {
             />
             <button type='submit'>Submit</button>
           </form>
-          <div className='mt-3' >
-            <span>Don't have account ?</span>
-            <Link style={{marginLeft:"5px", listStyle:"none"}} to='/register'>Signup</Link>
+          <div className='mt-3' style={{fontSize:".8rem"}}>
+            <span>Don't have an account ?</span>
+            <Link style={{marginLeft:"5px", listStyle:"none", textDecoration:"none"}} to='/register'>Signup</Link>
           </div>
-          <button className='btn btn-primary mt-3' onClick={loginWithGoogle}>Login with Google</button>
+          <button className='btn btn-primary mt-3' onClick={loginWithGoogle}>
+            <FaGoogle style={{
+              marginRight:"7px",
+              marginBottom:"4px"
+            }} />
+            Login with Google</button>
         </div>
       </div>
     </div>

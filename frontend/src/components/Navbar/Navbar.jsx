@@ -64,51 +64,38 @@ export default function Navbar() {
   }
 
   return (
-    <div>
-      <nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+<div>
+<nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
   <div className="container-fluid container">
-    <Link className="navbar-brand" to={"/"}><FaFileAlt style={{fontSize:"22px", fontWeight:"bold", marginRight:"3px", marginBottom:"5px"}} />TaskTrack</Link>
-    <div className="d-flex">
-      {
-        user ? (
+    <Link className="navbar-brand" to={"/"}>
+      <FaFileAlt style={{ fontSize: "22px", fontWeight: "bold", marginRight: "3px", marginBottom: "5px" }} />
+      TaskTrack
+    </Link>
+    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span className="navbar-toggler-icon"></span>
+    </button>
+    <div className="collapse navbar-collapse" id="navbarText">
+      <div className="d-flex ms-auto">
+        {user ? (
           <>
-          <h5 style={{
-            color:"#ffffff",
-            marginTop:".7em"
-          }} className="">Hii, {user.name}</h5>
-          <button style={{
-          }} className="btn" onClick={onLogout}>
-          <FaSignOutAlt className='logo-menu' />
-            Logout</button>
-          {/* <ul>
-            <li>
-              {user.name}
-            </li>
-            <li className='' onClick={onLogout}>
-                <Link className='' to='/login'>
-                  <FaSignOutAlt className='logo-menu' />
-                  Logout
-                </Link>
-            </li>
-          </ul> */}
-
+            <h5 style={{ color: "#ffffff", marginTop: ".7em" }} className="">Hii, {user.name}</h5>
+            <button className="btn" onClick={onLogout}>
+              <FaSignOutAlt className='logo-menu' />
+              Logout
+            </button>
           </>
         ) : (
           <>
-          <button className="btn " onClick={navigateLogin} >Login</button>
-          <button className="btn" onClick={navigateRegister}>Signup</button>
+            <button className="btn" onClick={navigateLogin}>Login</button>
+            <button className="btn" onClick={navigateRegister}>Signup</button>
           </>
-        )
-      }
-      
+        )}
+      </div>
     </div>
-    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="true" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"></span>
-    </button>
-    
   </div>
 </nav>
+</div>
 
-    </div>
+
   )
 }

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { register, reset } from '../../features/auth/authSlice'
 import { toast } from 'react-toastify'
 import Spinner from '../../components/Spinner/Spinner'
+import { FaGoogle } from 'react-icons/fa'
 import './register.css'
 
 export default function Register() {
@@ -70,7 +71,7 @@ export default function Register() {
     <div className='home-outter outter mt-5'>
       <div className=' container text-center'>
         <h1 style={{color:"#0d6efd"}}>Signup</h1>
-        <div>
+        <div className='form-outer'>
           <form className='form' onSubmit={handleSubmit}>
             <input
               type='text'
@@ -108,11 +109,16 @@ export default function Register() {
 
             <button type='submit'>Submit</button>
           </form>
-          <div className='mt-3' >
-            <span>Already have account ?</span>
-            <Link style={{marginLeft:"5px", listStyle:"none"}} to='/login'>Login</Link>
+          <div className='mt-3' style={{fontSize:".8rem"}}>
+            <span>Already have an account ?</span>
+            <Link style={{marginLeft:"5px", listStyle:"none", textDecoration:"none"}} to='/login'>Login</Link>
           </div>
-          <button className='btn btn-primary mt-3'>Signup with Google</button>
+          <button className='btn btn-primary mt-3'>
+            <FaGoogle style={{
+              marginRight:"7px",
+              marginBottom:"4px"
+            }} />
+            Signup with Google</button>
         </div>
       </div>
     </div>
