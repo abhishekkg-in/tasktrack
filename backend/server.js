@@ -31,7 +31,7 @@ app.use(session({
 
 // cors origin
 const corsOptions = {
-    origin: 'http://localhost:3000', // Replace with your frontend URL
+    origin: 'https://tasktrack-backend-gjon.onrender.com', // Replace with your frontend URL
     credentials: true, // Allow credentials
     optionsSuccessStatus: 200 // Some legacy browsers choke on 204
 };
