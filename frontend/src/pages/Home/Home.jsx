@@ -43,11 +43,20 @@ export default function Home() {
         )
       }
       <div className="image">
-      <img src={"./taskTrack.jpeg"} alt="Description of the image" style={{
-         width: '100%', 
-         height: '100%',
+      <img className='image-web' src={"./web.png"} alt="Description of the image" style={{
+         width: '400px', 
          objectFit:"cover",
-         borderRadius:"5px"
+         borderRadius:"5px",
+         marginLeft:"auto",
+         marginRight: "auto"
+        }} />
+      <img className='image-mobile' src={"./taskTrack.jpeg"} alt="Description of the image" style={{
+         width: '90%', 
+         objectFit:"cover",
+         borderRadius:"5px",
+         marginLeft:"auto",
+         marginRight: "auto",
+         marginTop:"1rem"
         }} />
       </div>
     </div>

@@ -30,13 +30,13 @@ app.use(session({
 }))
 
 // cors origin
-const corsOptions = {
-    origin: 'https://tasktrack-backend-gjon.onrender.com', // Replace with your frontend URL
-    credentials: true, // Allow credentials
-    optionsSuccessStatus: 200 // Some legacy browsers choke on 204
-};
+// const corsOptions = {
+//     origin: 'https://tasktrack-backend-gjon.onrender.com', // Replace with your frontend URL
+//     credentials: true, // Allow credentials
+//     optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 // setup passport
 app.use(passport.initialize())

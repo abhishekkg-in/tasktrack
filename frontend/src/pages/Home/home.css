@@ -1,3 +1,21 @@
 .home{
     background-image: src("./taskTrack.jpeg");
 }
+
+.image-web {
+    display: none;
+  }
+  
+  .image-mobile {
+    display: block;
+  }
+  
+  @media (min-width: 768px) {
+    .image-web {
+      display: block;
+    }
+  
+    .image-mobile {
+      display: none;
+    }
+  }
