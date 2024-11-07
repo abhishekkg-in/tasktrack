@@ -20,9 +20,9 @@ const app = express()
 
 // Middleware
 app.use(cors({
-    origin: "https://tasktrack-backend-gjon.onrender.com",
-    methods: "GET, POST, PUT, DELETE",
-    credentials: true,
+    // origin: "https://tasktrack-backend-gjon.onrender.com",
+    // methods: "GET, POST, PUT, DELETE",
+    // credentials: true,
 }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false })) // url encoded
