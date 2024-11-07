@@ -69,7 +69,7 @@ passport.use(
     new OAuth2Streategy({
         clientID: clientId,
         clientSecret: clientSecret,
-        callbackURL: "/auth/google/callback",
+        callbackURL: "https://tasktrack-backend-gjon.onrender.com/auth/google/callback",
         passReqToCallback: true,
         scope: ["profile", "email"]
     },
