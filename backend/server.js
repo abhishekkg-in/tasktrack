@@ -117,7 +117,7 @@ app.get("/logout",(req,res,next)=>{
     req.logout(function(err){
         if(err){return next(err)}
         req.session.destroy(() => {
-            res.redirect("https://tasktrack-frontend.onrender.com:3000");
+            res.redirect("https://tasktrack-frontend.onrender.com");
         })
     })
 })
