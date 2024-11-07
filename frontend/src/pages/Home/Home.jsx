@@ -57,7 +57,7 @@ export default function Home() {
          marginLeft:"auto",
          marginRight: "auto",
          marginTop:"1rem"
-        }} />
+        }} /> 
       </div>
     </div>
   )
