@@ -51,7 +51,7 @@ export default function Home() {
          marginRight: "auto"
         }} />
       <img className='image-mobile' src={"./taskTrack.jpeg"} alt="Description of the image" style={{
-         width: '90%', 
+         width: '100%', 
          objectFit:"cover",
          borderRadius:"5px",
          marginLeft:"auto",
