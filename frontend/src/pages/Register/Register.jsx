@@ -63,6 +63,10 @@ export default function Register() {
     }
   }
 
+  const loginWithGoogle = () => {
+    window.open("https://tasktrack-backend-gjon.onrender.com/auth/google/callback", "_self")
+  }
+
   if (isLoading) {
     return <Spinner />
   }
@@ -113,7 +117,7 @@ export default function Register() {
             <span>Already have an account ?</span>
             <Link style={{marginLeft:"5px", listStyle:"none", textDecoration:"none"}} to='/login'>Login</Link>
           </div>
-          <button className='btn btn-primary mt-3'>
+          <button className='btn btn-primary mt-3' onClick={loginWithGoogle}>
             <FaGoogle style={{
               marginRight:"7px",
               marginBottom:"4px"

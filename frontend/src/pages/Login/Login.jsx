@@ -50,7 +50,7 @@ export default function Login() {
   }
 
   const loginWithGoogle = () => {
-    window.open("http://localhost:5000/auth/google/callback", "_self")
+    window.open("https://tasktrack-backend-gjon.onrender.com/auth/google/callback", "_self")
   }
 
   if (isLoading) {

@@ -38,6 +38,15 @@ app.use(session({
 
 // app.use(cors(corsOptions));
 
+// connecting to database
+connectDB()
+
+// our own errorHAndler
+app.use(errorHandler)
+
+// calling routes
+app.use('/api', require('./routes/mainRoute'))
+
 // setup passport
 app.use(passport.initialize())
 app.use(passport.session())
@@ -125,14 +134,7 @@ app.get("/logout",(req,res,next)=>{
 
 
 
-// connecting to database
-connectDB()
 
-// our own errorHAndler
-app.use(errorHandler)
-
-// calling routes
-app.use('/api', require('./routes/mainRoute'))
 
  
 app.listen(port, () => {
