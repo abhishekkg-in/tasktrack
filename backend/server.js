@@ -46,7 +46,7 @@ passport.use(
     new OAuth2Streategy({
         clientID: clientId,
         clientSecret: clientSecret,
-        callbackURL: "http://localhost:5000/auth/google/callback",
+        callbackURL: "https://tasktrack-backend-gjon.onrender.com/auth/google/callback",
         passReqToCallback: true,
         scope: ["profile", "email"]
     },
@@ -100,8 +100,8 @@ app.get("/auth/google",
  },
  passport.authenticate("google", {scope:["profile", "email"], prompt: 'select_account'}))
 app.get("/auth/google/callback", passport.authenticate("google", {
-    successRedirect: "http://localhost:3000/tasks",
-    failureRedirect: "http://localhost:3000/login",
+    successRedirect: "https://tasktrack-frontend.onrender.com/tasks",
+    failureRedirect: "https://tasktrack-frontend.onrender.com/login",
 }))
 
 app.get("/login/success", async(req, res) => {
@@ -117,7 +117,7 @@ app.get("/logout",(req,res,next)=>{
     req.logout(function(err){
         if(err){return next(err)}
         req.session.destroy(() => {
-            res.redirect("http://localhost:3000");
+            res.redirect("https://tasktrack-frontend.onrender.com:3000");
         })
     })
 })
